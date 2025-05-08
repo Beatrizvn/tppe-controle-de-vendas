@@ -11,12 +11,12 @@ app.use(express.json());
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'bd',
+  database: 'tppe',
   password: 'postgres',
   port: 5432,
 });
 
-app.get('/api/hello', async (_, res) => {
+app.get('/', async (_, res) => {
   res.json({ message: 'Hello from backend!' });
 });
 
