@@ -5,8 +5,9 @@
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
+  "exclude": ["node_modules", "tests"],
   "scripts": {
   "build": "tsc",
   "dev": "ts-node-dev src/index.ts"
