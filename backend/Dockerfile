@@ -1,4 +1,3 @@
-# Etapa 1: build da aplicação
 FROM node:20 AS builder
 
 WORKDIR /app
