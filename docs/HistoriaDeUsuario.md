@@ -28,6 +28,20 @@
 
 ---
 
+## Registro de Fornecedores
+**Como** gerente,  
+**eu quero** registrar os fornecedores dos meus produtos,  
+**para que** eu possa entrar em contato novamente com as empresas.
+
+---
+
+## Lucro nas vendas
+**Como** gerente,  
+**eu quero** quero saber o quanto de lucro deu minha venda,  
+**para que** possa saber os lucros mensal da empresa.
+
+---
+
 ## Pagamento à Vista
 **Como** cliente,  
 **eu quero** pagar minha compra à vista com desconto,  
