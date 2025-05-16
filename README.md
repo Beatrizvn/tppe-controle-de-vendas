@@ -37,19 +37,19 @@ O backend roda em `http://localhost:3001`
 
 Banco estará disponível em `localhost:5432`
 
-O Testes vão aparecer assim no console:
+Quando você roda, os testes serão executados automaticamente antes do servidor iniciar. A saída no console será parecida com esta:
 
 ```bash
 tppe_backend   | > jest
 tppe_backend   | 
-tppe_backend   | PASS tests/hello.test.ts (15.482 s)
+tppe_backend   | PASS tests/yyy.ts (15.482 s)
 tppe_backend   |   Basic test
 tppe_backend   |     ✓ should pass (14 ms)
 tppe_backend   | 
-tppe_backend   | Test Suites: 1 passed, 1 total
-tppe_backend   | Tests:       1 passed, 1 total
+tppe_backend   | Test Suites: x passed, x total
+tppe_backend   | Tests:       x passed, x total
 tppe_backend   | Snapshots:   0 total
-tppe_backend   | Time:        19.072 s
+tppe_backend   | Time:        y s
 tppe_backend   | Ran all test suites.
 ```
 
