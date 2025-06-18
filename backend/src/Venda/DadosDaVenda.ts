@@ -1,6 +1,6 @@
-import { Cliente } from './Cliente';
+import { Cliente } from '../Cliente/Cliente';
 import { ProdutoVendido } from './ProdutoVendido';
-import { Pagamento } from './Pagamento';
+import { Pagamento } from '../Pagamento/Pagamento';
 
 export class DadosDaVenda {
     produtosVendidos: ProdutoVendido[];
