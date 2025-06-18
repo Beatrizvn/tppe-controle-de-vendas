@@ -1,4 +1,4 @@
-import { Fornecedor } from './Fornecedor';
+import { Fornecedor } from '../Fornecedor/Fornecedor';
 
 export class Produto {
     codigo: string;
