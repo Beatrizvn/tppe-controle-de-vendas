@@ -10,86 +10,116 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Cliente {
+model User {
   id        Int      @id @default(autoincrement())
-  nome      String
-  telefone  String?
-  endereco  String?
+  name      String
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  vendas Venda[] 
+
+  customers  Customer[]
+  suppliers  Supplier[]
+  products   Product[]
+  sales      Sale[]
 }
 
-model Fornecedor {
-  id           Int      @id @default(autoincrement())
-  nomeEmpresa  String
-  cnpj         String   @unique
-  email        String?  @unique
-  telefone     String?
-  endereco     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  produtos Produto[] 
-}
-
-model Produto {
+model Customer {
   id        Int      @id @default(autoincrement())
-  codigo    String   @unique
-  nome      String
-  valorVenda  Decimal
-  valorCompra Decimal
-  categoria String
-  estoque   Int
+  name      String
+  phone     String?
+  address   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  fornecedorId Int
-  fornecedor   Fornecedor @relation(fields: [fornecedorId], references: [id])
-  itensVendidos ProdutoVendido[]
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  sales Sale[]
 }
 
-model Venda {
+model Supplier {
+  id          Int      @id @default(autoincrement())
+  companyName String
+  cnpj        String   @unique
+  email       String?  @unique
+  phone       String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  products Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  name        String
+  salePrice   Decimal
+  costPrice   Decimal
+  category    String
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  supplierId Int
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  soldItems SoldItem[]
+}
+
+model Sale {
   id        Int      @id @default(autoincrement())
-  data      DateTime @default(now())
-  valorTotal Decimal
+  date      DateTime @default(now())
+  total     Decimal
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  clienteId Int
-  cliente   Cliente @relation(fields: [clienteId], references: [id])
-  produtosVendidos ProdutoVendido[]
-  pagamento Pagamento?
+
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  soldItems SoldItem[]
+  payment   Payment?
 }
 
-model ProdutoVendido {
-  id        Int   @id @default(autoincrement())
-  quantidade Int
-  precoUnitario Decimal
+model SoldItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  unitPrice Decimal
 
-  vendaId   Int
-  venda     Venda   @relation(fields: [vendaId], references: [id])
+  saleId    Int
+  sale      Sale    @relation(fields: [saleId], references: [id])
 
-  produtoId Int
-  produto   Produto @relation(fields: [produtoId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
 
-  @@unique([vendaId, produtoId]) 
+  @@unique([saleId, productId])
 }
 
-enum TipoPagamento {
-  A_VISTA
-  PARCELADO
+enum PaymentType {
+  UPFRONT
+  INSTALLMENT
 }
 
-model Pagamento {
-  id        Int      @id @default(autoincrement())
-  status    String   
-  data      DateTime @default(now())
-  tipo      TipoPagamento 
+model Payment {
+  id              Int         @id @default(autoincrement())
+  status          String
+  date            DateTime    @default(now())
+  type            PaymentType
+  discount        Decimal?
+  finalAmount     Decimal?
+  installments    Int?
+  interest        Decimal?
 
-  desconto   Decimal?
-  valorFinal Decimal?
-
-  quantidadeParcelas Int?
-  juros              Decimal?
-
-  vendaId Int     @unique
-  venda   Venda   @relation(fields: [vendaId], references: [id])
+  saleId Int @unique
+  sale   Sale  @relation(fields: [saleId], references: [id])
 }
