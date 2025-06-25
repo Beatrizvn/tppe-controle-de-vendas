@@ -1,6 +1,8 @@
 import express from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
+import customerRoutes from './Customer/route';
+import usersRoutes from './User/route';
 
 const app = express();
 const port = 3001;
@@ -8,13 +10,8 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'tppe',
-  password: 'postgres',
-  port: 5432,
-});
+app.use('/customers', customerRoutes);
+app.use('/users', usersRoutes);
 
 app.get('/', async (_, res) => {
   res.json({ message: 'Hello from backend!' });
