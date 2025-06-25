@@ -1,6 +1,6 @@
-import { Customer } from '../Customer/Customer';
-import { SoldProduct } from './SoldProduct'; 
-import { Payment } from '../Payment/Payment';
+import { Customer } from '../Customer/schema';
+import { SoldProduct } from '../SoldProduct/schema'; 
+import { Payment } from '../Payment/schema';
 
 export class Sale {
     soldProducts: SoldProduct[];

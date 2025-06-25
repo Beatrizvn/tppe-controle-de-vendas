@@ -1,4 +1,4 @@
-import { Supplier } from '../Supplier/Supplier';
+import { Supplier } from '../Supplier/schema';
 
 export class Product {
     code: string;

@@ -1,4 +1,4 @@
-import { Product } from '../Product/Product';
+import { Product } from '../Product/schema';
 
 export class SoldProduct {
     product: Product;
