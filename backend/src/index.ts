@@ -17,6 +17,8 @@ app.use('/users', usersRoutes);
 app.use('/products', productRoutes);
 app.use('/suppliers', supplierRoutes);
 
+export default app;
+
 app.get('/', async (_, res) => {
   res.json({ message: 'Hello from backend!' });
 });
