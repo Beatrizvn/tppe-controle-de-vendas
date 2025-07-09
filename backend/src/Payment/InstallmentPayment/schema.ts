@@ -1,4 +1,4 @@
-import { Payment } from "../Payment/schema";
+import { Payment } from "../schema";
 
 export class InstallmentPayment extends Payment {
     numberOfInstallments: number;
