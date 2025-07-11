@@ -22,9 +22,10 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const newPayment = await PaymentRepository.create(req.body);
     res.status(201).json(newPayment);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    res.status(400).json({ error: err.message || 'Invalid data' });
+    const errorMessage = err instanceof Error ? err.message : 'Invalid data';
+    res.status(400).json({ error: errorMessage });
   }
 });
 
@@ -34,9 +35,10 @@ router.put('/:id', async (req: Request, res: Response) => {
   try {
     const updated = await PaymentRepository.update(id, req.body);
     res.json(updated);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    res.status(400).json({ error: err.message || 'Could not update payment' });
+    const errorMessage = err instanceof Error ? err.message : 'Could not update payment';
+    res.status(400).json({ error: errorMessage });
   }
 });
 
@@ -45,7 +47,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   try {
     await PaymentRepository.delete(Number(req.params.id));
     res.sendStatus(204);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
     res.status(404).json({ error: 'Payment not found' });
   }

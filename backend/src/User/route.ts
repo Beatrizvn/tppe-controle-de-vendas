@@ -23,9 +23,9 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const newUser = await UserRepository.create(data);
     res.status(201).json(newUser);
-  } catch (err: any) {
-    console.error(err);
-    res.status(400).json({ error: err.message || 'Invalid data' });
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Invalid data';
+    res.status(400).json({ error: errorMessage });
   }
 });
 

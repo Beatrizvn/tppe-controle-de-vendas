@@ -23,7 +23,7 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const newCustomer = await CustomerRepository.create(data);
     res.status(201).json(newCustomer);
-  } catch (err) {
+  } catch {
     res.status(400).json({ error: 'Invalid data' });
   }
 });

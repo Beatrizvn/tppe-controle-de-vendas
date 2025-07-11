@@ -1,5 +1,4 @@
 import express from 'express';
-import { Pool } from 'pg';
 import cors from 'cors';
 import customerRoutes from './Customer/route';
 import usersRoutes from './User/route';

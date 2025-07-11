@@ -22,9 +22,13 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const newItem = await SoldItemRepository.create(req.body);
     res.status(201).json(newItem);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    res.status(400).json({ error: err.message || 'Invalid data' });
+    if (err instanceof Error) {
+      res.status(400).json({ error: err.message });
+    } else {
+      res.status(400).json({ error: 'Invalid data' });
+    }
   }
 });
 
@@ -33,7 +37,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
   try {
     await SoldItemRepository.delete(Number(req.params.id));
     res.sendStatus(204);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
     res.status(404).json({ error: 'Sold item not found' });
   }

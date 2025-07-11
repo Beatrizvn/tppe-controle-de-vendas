@@ -23,9 +23,10 @@ router.post('/', async (req: Request, res: Response) => {
   try {
     const newProduct = await ProductRepository.create(data);
     res.status(201).json(newProduct);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(err);
-    res.status(400).json({ error: err.message || 'Invalid data' });
+    const errorMessage = err instanceof Error ? err.message : 'Invalid data';
+    res.status(400).json({ error: errorMessage });
   }
 });
 
