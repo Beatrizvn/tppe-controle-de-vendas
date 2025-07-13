@@ -34,6 +34,18 @@ services:
       - ./backend:/app
     command: sh -c "npm install && npx prisma migrate deploy && npm run test || true && npm run dev"
 
+  frontend:
+    build: ./frontend
+    container_name: tppe_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - minha-rede
+    environment:
+      - NODE_ENV=production
+
 volumes:
   pgdata:
 
