@@ -27,7 +27,7 @@ Este é um projeto fullstack usando:
 
 ## ⚙️ Como rodar
 
-### 🐳 Backend + Banco de Dados + Testes
+### 🐳 Backend + Banco de Dados + Testes + Frontend
 
 ```bash
 docker compose up --build
@@ -36,6 +36,8 @@ docker compose up --build
 O backend roda em `http://localhost:3001`
 
 Banco estará disponível em `localhost:5432`
+
+O frontend roda em `http://localhost:3000`
 
 Quando você roda, os testes serão executados automaticamente antes do servidor iniciar. A saída no console será parecida com esta:
 
@@ -52,19 +54,6 @@ tppe_backend   | Snapshots:   0 total
 tppe_backend   | Time:        y s
 tppe_backend   | Ran all test suites.
 ```
-
----
-
-### 3. Frontend (Next.js)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-O frontend roda em `http://localhost:3000`
-
 ---
 
 ## 💡 Conexão externa (DBeaver, etc.)
