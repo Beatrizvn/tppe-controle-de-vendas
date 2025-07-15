@@ -14,6 +14,7 @@ interface AuthContextData {
   user: User | null;
   isAuthenticated: boolean;
   signIn: (data: SignInCredentials) => Promise<void>;
+  logout: () => void;
 }
 
 interface SignInCredentials {
@@ -43,9 +44,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       alert('Email ou senha inválidos!');
     }
   }
-  console.log("AuthContext initialized with user:", user);
+
+    async function logout() {
+    try {
+      await api.post('/users/logout'); 
+      setUser(null);
+      router.push('/'); 
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signIn, logout }}>
       {children}
     </AuthContext.Provider>
   );
