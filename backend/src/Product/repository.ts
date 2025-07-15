@@ -30,4 +30,10 @@ export class ProductRepository {
   static async countAll() {
     return prisma.product.count();
   }
+
+  static async findByUserId(userId: number) {
+    return prisma.product.findMany({
+      where: { userId }
+    });
+  }
 }

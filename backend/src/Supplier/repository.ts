@@ -30,4 +30,10 @@ export class SupplierRepository {
   static async countAll() {
     return prisma.supplier.count();
   }
+  
+  static async findByUserId(userId: number) {
+    return prisma.supplier.findMany({
+      where: { userId }
+    });
+  }
 }

@@ -17,6 +17,13 @@ router.get('/:id', async (req: Request, res: Response) => {
   res.json(product);
 });
 
+// GET /products/user/:userId
+router.get('/userid/:userId', async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+  const products = await ProductRepository.findByUserId(userId);
+  res.json(products);
+});
+
 // POST /products
 router.post('/', async (req: Request, res: Response) => {
   const data = req.body;

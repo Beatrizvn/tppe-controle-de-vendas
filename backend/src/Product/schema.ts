@@ -1,6 +1,7 @@
 import { Supplier } from '../Supplier/schema';
 
 export class Product {
+    userId: number; 
     code: string;
     name: string;
     sellingPrice: number;
@@ -10,6 +11,7 @@ export class Product {
     purchasePrice: number;
 
     constructor(
+        user_id: number,
         code: string,
         name: string,
         sellingPrice: number,
@@ -18,6 +20,7 @@ export class Product {
         supplier: Supplier,
         purchasePrice: number
     ) {
+        this.userId = user_id; 
         this.code = code;
         this.name = name;
         this.sellingPrice = sellingPrice;

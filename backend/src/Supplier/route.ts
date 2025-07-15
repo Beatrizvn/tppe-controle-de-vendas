@@ -17,6 +17,13 @@ router.get('/:id', async (req: Request, res: Response) => {
   res.json(supplier);
 });
 
+// GET /suppliers/user/:userId
+router.get('/userid/:userId', async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+  const suppliers = await SupplierRepository.findByUserId(userId);
+  res.json(suppliers);
+});
+
 // POST /suppliers
 router.post('/', async (req: Request, res: Response) => {
   const data = req.body;
