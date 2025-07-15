@@ -5,17 +5,14 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { api } from '@/services/api'; // Nosso serviço de API
+import { api } from '@/services/api'; 
 
-// 1. Definição do Schema de Validação com Zod
-// O nome do campo no schema deve corresponder ao nome no seu banco de dados
 const signupSchema = z.object({
   name: z.string().min(2, { message: 'O nome da empresa é obrigatório.' }),
   email: z.string().email({ message: 'Por favor, insira um email válido.' }),
   password: z.string().min(6, { message: 'A senha deve ter no mínimo 6 caracteres.' }),
 });
 
-// 2. Inferência do Tipo a partir do Schema
 type SignupFormInputs = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
@@ -90,7 +87,6 @@ export default function SignupPage() {
             {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>}
           </div>
 
-          {/* Botão de Sign Up */}
           <div>
             <button
               type="submit"
@@ -102,7 +98,6 @@ export default function SignupPage() {
           </div>
         </form>
 
-        {/* Link para Login */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Already a member?{' '}
           <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
