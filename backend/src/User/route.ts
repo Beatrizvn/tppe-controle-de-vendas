@@ -87,4 +87,17 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
+// POST /logout
+router.post('/logout', (_req: Request, res: Response) => {
+  try {
+    res.clearCookie('auth_token', { path: '/' });
+    
+    res.status(200).json({ message: 'Logout realizado com sucesso.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro no servidor' });
+  }
+});
+
+
 export default router;
