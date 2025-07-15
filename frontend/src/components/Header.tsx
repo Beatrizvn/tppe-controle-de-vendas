@@ -1,11 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-interface HeaderProps {
-  isLoggedIn: boolean;
-}
 
-export default function Header({ isLoggedIn }: HeaderProps) {
+export default function Header() {
   return (
     <header
       className="
@@ -25,7 +22,6 @@ export default function Header({ isLoggedIn }: HeaderProps) {
         />
       </Link>
 
-      {isLoggedIn && (
         <nav className='flex ml-20 text-base font-semibold'>
           <ul className="flex items-center gap-6 md:gap-8">
             <li>
@@ -54,7 +50,6 @@ export default function Header({ isLoggedIn }: HeaderProps) {
             </li>
           </ul>
         </nav>
-      )}
     </header>
   );
 }
