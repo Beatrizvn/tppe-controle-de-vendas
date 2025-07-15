@@ -4,7 +4,6 @@ import { createContext, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 
-// Tipagem para os dados do usuário que você espera receber do backend
 interface User {
   id: number;
   name: string;
@@ -38,13 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       setUser(userData);
-      router.push('/'); 
+      router.push('/home'); 
     } catch (error) {
       console.error("Falha no login:", error);
-      // alert('Email ou senha inválidos!');
+      alert('Email ou senha inválidos!');
     }
   }
-
+  console.log("AuthContext initialized with user:", user);
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
       {children}

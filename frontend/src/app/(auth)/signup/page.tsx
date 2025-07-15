@@ -21,7 +21,6 @@ type SignupFormInputs = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const router = useRouter();
 
-  // 3. Configuração do React Hook Form
   const {
     register,
     handleSubmit,
@@ -30,20 +29,16 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
   });
 
-  // 4. Função de Envio do Formulário
   const handleSignup: SubmitHandler<SignupFormInputs> = async (data) => {
     try {
-      // Usamos a rota POST /users que você já tem no backend
       await api.post('/users', data);
       
       alert('Cadastro realizado com sucesso! Você será redirecionado para o login.');
       
-      // Redireciona o usuário para a página de login após o sucesso
       router.push('/login');
 
     } catch (error: any) {
       console.error('Falha no cadastro:', error);
-      // Pega a mensagem de erro do backend, se existir
       const errorMessage = error.response?.data?.error || 'Erro ao realizar o cadastro. Tente novamente.';
       alert(errorMessage);
     }
@@ -53,7 +48,6 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
         <form onSubmit={handleSubmit(handleSignup)} className="space-y-6">
-          {/* Campo de Nome da Empresa */}
           <div>
             <label htmlFor="companyName" className="sr-only">
               Company Name
@@ -62,13 +56,12 @@ export default function SignupPage() {
               id="companyName"
               type="text"
               placeholder="Company Name"
-              {...register('name')} // O nome aqui é 'name' para bater com o schema
+              {...register('name')}
               className="w-full rounded-md border border-gray-300 p-3 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
             />
             {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>}
           </div>
 
-          {/* Campo de Email */}
           <div>
             <label htmlFor="email" className="sr-only">
               Email
@@ -83,7 +76,6 @@ export default function SignupPage() {
             {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
           </div>
 
-          {/* Campo de Senha */}
           <div>
             <label htmlFor="password" className="sr-only">
               Password

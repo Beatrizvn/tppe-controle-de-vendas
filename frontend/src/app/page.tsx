@@ -1,8 +1,23 @@
+'use client';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      testeee
-    </div>
-  );
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+
+import LoginPage from './(auth)/login/page';
+
+export default function MainPage() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/home'); 
+    }
+  }, [isAuthenticated, router]);
+
+  if (isAuthenticated) {
+    return <p>Redirecionando...</p>;
+  }
+  return <LoginPage />;
 }
