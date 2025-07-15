@@ -17,7 +17,7 @@ export default function MainPage() {
   }, [isAuthenticated, router]);
 
   if (isAuthenticated) {
-    return <p>Redirecionando...</p>;
+    return <p>Loading...</p>;
   }
   return <LoginPage />;
 }
