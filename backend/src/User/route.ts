@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import { UserRepository } from './repository';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -55,6 +57,34 @@ router.delete('/:id', async (req: Request, res: Response) => {
 router.get('/count/all', async (_req: Request, res: Response) => {
   const count = await UserRepository.countAll();
   res.json({ count });
+});
+
+router.post('/login', async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await UserRepository.findByEmail(email);
+    if (!user) {
+      return res.status(401).json({ message: 'Email' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Senha inválidos' });
+    }
+
+    const secret = process.env.JWT_SECRET || 'seu_segredo_super_secreto';
+    const token = jwt.sign({ userId: user.id }, secret, { expiresIn: '1h' });
+
+    res.status(200).json({
+      user: { id: user.id, name: user.name, email: user.email },
+      token,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro interno no servidor' });
+  }
 });
 
 export default router;
