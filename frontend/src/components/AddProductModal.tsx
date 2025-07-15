@@ -17,6 +17,7 @@ export type ProductInputs = {
   supplierId: number; 
   costPrice: number;
   description: string;
+  stock: number;
 };
 
 interface AddProductModalProps {
@@ -42,7 +43,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
     const onSubmit: SubmitHandler<ProductInputs> = (data) => {
         const supplierIdNumber = typeof data.supplierId === "string" ? parseInt(data.supplierId, 10) : data.supplierId;
-        onConfirm({ ...data, supplierId: supplierIdNumber, stock: 0 });
+        onConfirm({ ...data, supplierId: supplierIdNumber });
     };
 
   if (!isOpen) {
@@ -119,7 +120,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
             </div>
 
             <div>
-              <label htmlFor="purchasePrice" className="block text-sm font-medium text-gray-700">Purchase value</label>
+              <label htmlFor="costPrice" className="block text-sm font-medium text-gray-700">Purchase value (per item)</label>
               <input 
                 id="purchasePrice"
                 type="number"
@@ -128,6 +129,18 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
                 className={`mt-1 block w-full border ${errors.costPrice ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
               />
               {errors.costPrice && <p className="text-red-500 text-xs mt-1">{errors.costPrice.message}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="stock" className="block text-sm font-medium text-gray-700">Quantity in stock</label>
+              <input 
+                id="stock"
+                type="number"
+                step="0.01"
+                {...register("stock", { required: "Stock value is required", valueAsNumber: true, min: { value: 0.01, message: "Value must be positive" } })}
+                className={`mt-1 block w-full border ${errors.costPrice ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
+              />
+              {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>}
             </div>
           </div>
           
