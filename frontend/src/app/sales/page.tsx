@@ -83,20 +83,27 @@ export default function SalesPage() {
   const handleAddSale = async (saleData: any) => {
     if (!user?.id) return alert('User not authenticated!');
     try {
+
+      const finalPayload = { ...saleData, userId: user.id };
+
       const response = await fetch(`${apiUrl}/sales`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...saleData, userId: user.id }),
+        body: JSON.stringify(finalPayload),
       });
-      if (!response.ok) throw new Error('Failed to create sale');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create sale');
+      }
+
       const newSale = await response.json();
-      setSales(prevSales => [newSale, ...prevSales]); 
-      setModalOpen(false); 
     } catch (error) {
-      console.error("Error creating sale:", error);
-      alert('Failed to create sale.');
+       console.error("Error creating sale:", error);
+       alert(`Failed to create sale: ${error.message}`);
     }
   };
+
 
    const handleAddCustomer = async (customerData: any) => {
     if (!user) return alert('User not authenticated!');

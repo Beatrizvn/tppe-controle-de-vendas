@@ -4,7 +4,6 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function HomePage() {
   const { user } = useAuth();
-  console.log("User:", user);
   if (!user) {
     return <p>Carregando...</p>;
   }

@@ -3,12 +3,10 @@ import { FaTrash } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 const SaleRow = ({ sale, onDelete }) => {
-  const firstProductName = sale.soldProducts?.[0]?.product?.name || 'N/A';
-
-  const totalValue = sale.soldProducts?.reduce(
-    (acc, soldProduct) => acc + (soldProduct.product.sellingPrice * soldProduct.quantity),
-    0
-  ) || 0;
+  
+  const firstProductName = sale.soldItems?.[0]?.product?.name || 'N/A';
+  
+  const totalValue = parseFloat(sale.total) || 0;
   
   return (
     <div className="grid grid-cols-10 gap-4 items-center bg-white hover:bg-gray-50 p-4 rounded-lg border border-gray-200">
