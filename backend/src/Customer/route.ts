@@ -57,4 +57,11 @@ router.get('/count/all', async (_req: Request, res: Response) => {
   res.json({ count });
 });
 
+// GET /customers/user/:userId
+router.get('/userid/:userId', async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+  const customers = await CustomerRepository.findByUserId(userId);
+  res.json(customers);
+});
+
 export default router;

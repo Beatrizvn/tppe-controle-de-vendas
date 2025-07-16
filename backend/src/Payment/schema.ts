@@ -8,7 +8,6 @@ export abstract class Payment {
     }
 
     public validatePayment(): boolean {
-        console.log("Validating payment...");
         this.status = "Approved";
         return true;
     }

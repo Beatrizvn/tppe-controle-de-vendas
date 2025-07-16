@@ -26,4 +26,8 @@ export class CustomerRepository {
   static async countAll(): Promise<number> {
     return prisma.customer.count();
   }
+
+  static async findByUserId(userId: number): Promise<Customer[]> {
+    return prisma.customer.findMany({ where: { userId } });
+  }
 }

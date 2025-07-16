@@ -17,6 +17,13 @@ router.get('/:id', async (req: Request, res: Response) => {
   res.json(sale);
 });
 
+// GET /sales/user/:userId
+router.get('/userid/:userId', async (req: Request, res: Response) => {
+  const userId = Number(req.params.userId);
+  const sales = await SaleRepository.findByUserId(userId);
+  res.json(sales);
+});
+
 // POST new sale
 router.post('/', async (req: Request, res: Response) => {
   try {
@@ -31,11 +38,11 @@ router.post('/', async (req: Request, res: Response) => {
 
 // DELETE a sale
 router.delete('/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
   try {
-    await SaleRepository.delete(Number(req.params.id));
+    await SaleRepository.delete(Number(id));
     res.sendStatus(204);
-  } catch (err: unknown) {
-    console.error(err);
+  } catch  {
     res.status(404).json({ error: 'Sale not found' });
   }
 });

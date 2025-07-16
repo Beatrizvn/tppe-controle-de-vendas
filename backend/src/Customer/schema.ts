@@ -3,7 +3,6 @@ export class Customer {
     name: string;
     phone: string;
     address: string;
-    email?: string; 
 
     constructor(userId:number, name: string, taxId: string, phone: string, address: string) {
         this.userId = userId;

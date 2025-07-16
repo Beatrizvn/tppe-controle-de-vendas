@@ -31,7 +31,6 @@ export class Product {
     }
 
     public checkStock(): number {
-        console.log(`Checking stock for product ${this.name}. Available quantity: ${this.stockQuantity}`);
         return this.stockQuantity;
     }
 }
