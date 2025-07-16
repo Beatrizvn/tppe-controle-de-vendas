@@ -84,18 +84,18 @@ export default function ManagementPage() {
     }
   };
 
-    const handleAddSupplier = async (supplierData: SupplierInputs & { userId: number }) => {
-      try {
-        const response = await api.post('/suppliers', {
-          ...supplierData
-        });
+  const handleAddSupplier = async (supplierData: SupplierInputs & { userId: number }) => {
+    try {
+      const response = await api.post('/suppliers', {
+        ...supplierData
+      });
 
-        setSuppliers(prev => [...prev, response.data]);
-        setOpenModal(null);
-      } catch (error) {
-        console.error("Error adding supplier:", error);
-      }
-    };
+      setSuppliers(prev => [...prev, response.data]);
+      setOpenModal(null);
+    } catch (error) {
+      console.error("Error adding supplier:", error);
+    }
+  };
 
 
   const isProductsTab = activeTab === 'Products';
@@ -135,22 +135,21 @@ export default function ManagementPage() {
               {isProductsTab ? 'Add Product' : 'Add Supplier'}
             </button>
           </div>
-        </div>
 
-        {isProductsTab ? (
-          <ProductList products={products} onDelete={handleDeleteProduct} />
-        ) : (
-          <SupplierList suppliers={suppliers} onDelete={handleDeleteSupplier} />
-        )}
+          {isProductsTab ? (
+            <ProductList products={products} onDelete={handleDeleteProduct} />
+          ) : (
+            <SupplierList suppliers={suppliers} onDelete={handleDeleteSupplier} />
+          )}
 
         <AddProductModal
           isOpen={openModal === 'product'}
           onClose={() => setOpenModal(null)}
           onConfirm={(data) => {
             if (!user?.id) return;
-            handleAddProduct({ 
-              ...data, 
-              userId: user.id 
+            handleAddProduct({
+              ...data,
+              userId: user.id
             });
           }}
           suppliers={suppliers}
@@ -163,6 +162,7 @@ export default function ManagementPage() {
             handleAddSupplier({ ...data, userId: user.id });
           }}
         />
+        </div>
       </div>
     </div>
   );
