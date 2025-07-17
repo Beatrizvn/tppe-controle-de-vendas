@@ -36,7 +36,24 @@ export default function ManagementPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [openModal, setOpenModal] = useState<'product' | 'supplier' | null>(null);
+  const [editingItem, setEditingItem] = useState<Product | Supplier | null>(null);
+
   const { user } = useAuth();
+
+  const handleOpenEditModal = (item: Product | Supplier, type: 'product' | 'supplier') => {
+    setEditingItem(item);
+    setOpenModal(type);
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingItem(null); 
+    setOpenModal(isProductsTab ? 'product' : 'supplier');
+  };
+
+  const closeModalAndReset = () => {
+    setOpenModal(null);
+    setEditingItem(null);
+  };
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -79,6 +96,7 @@ export default function ManagementPage() {
       const response = await api.post('/products', productData);
       setProducts(prev => [...prev, response.data]);
       setOpenModal(null);
+      closeModalAndReset()
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -92,8 +110,32 @@ export default function ManagementPage() {
 
       setSuppliers(prev => [...prev, response.data]);
       setOpenModal(null);
+      closeModalAndReset()
     } catch (error) {
       console.error("Error adding supplier:", error);
+    }
+  };
+
+  const handleUpdateProduct = async (productData: ProductInputs) => {
+    if (!editingItem) return;
+    try {
+      const response = await api.put(`/products/${editingItem.id}`, productData);
+      // Atualiza a lista de produtos no estado com o produto modificado
+      setProducts(products.map(p => p.id === editingItem.id ? response.data : p));
+      closeModalAndReset();
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
+  const handleUpdateSupplier = async (supplierData: SupplierInputs) => {
+    if (!editingItem) return;
+    try {
+      const response = await api.put(`/suppliers/${editingItem.id}`, supplierData);
+      setSuppliers(suppliers.map(s => s.id === editingItem.id ? response.data : s));
+      closeModalAndReset();
+    } catch (error) {
+      console.error("Error updating supplier:", error);
     }
   };
 
@@ -137,31 +179,38 @@ export default function ManagementPage() {
           </div>
 
           {isProductsTab ? (
-            <ProductList products={products} onDelete={handleDeleteProduct} />
+            <ProductList products={products} onDelete={handleDeleteProduct} onEdit={(product) => handleOpenEditModal(product, 'product')} />
           ) : (
-            <SupplierList suppliers={suppliers} onDelete={handleDeleteSupplier} />
+            <SupplierList suppliers={suppliers} onDelete={handleDeleteSupplier} onEdit={(supplier) => handleOpenEditModal(supplier, 'supplier')} />
           )}
 
-        <AddProductModal
-          isOpen={openModal === 'product'}
-          onClose={() => setOpenModal(null)}
-          onConfirm={(data) => {
-            if (!user?.id) return;
-            handleAddProduct({
-              ...data,
-              userId: user.id
-            });
-          }}
-          suppliers={suppliers}
-        />
-        <AddSupplierModal
-          isOpen={openModal === 'supplier'}
-          onClose={() => setOpenModal(null)}
-          onConfirm={(data) => {
-            if (!user?.id) return;
-            handleAddSupplier({ ...data, userId: user.id });
-          }}
-        />
+            <AddProductModal
+              isOpen={openModal === 'product'}
+              onClose={closeModalAndReset}
+              onConfirm={(data) => {
+                if (!user?.id) return;
+                if (editingItem) {
+                  handleUpdateProduct(data);
+                } else {
+                  handleAddProduct({ ...data, userId: user.id });
+                }
+              }}
+              suppliers={suppliers}
+              productToEdit={openModal === 'product' ? editingItem as Product : null}
+            />
+            <AddSupplierModal
+              isOpen={openModal === 'supplier'}
+              onClose={closeModalAndReset}
+              onConfirm={(data) => {
+                if (!user?.id) return;
+                if (editingItem) {
+                  handleUpdateSupplier(data);
+                } else {
+                  handleAddSupplier({ ...data, userId: user.id });
+                }
+              }}
+              supplierToEdit={openModal === 'supplier' ? editingItem as Supplier : null} 
+            />
         </div>
       </div>
     </div>

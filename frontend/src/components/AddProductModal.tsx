@@ -1,5 +1,6 @@
 'use client';
 
+import { Product } from '@/app/products/page';
 import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoClose } from "react-icons/io5";
@@ -14,7 +15,7 @@ export type ProductInputs = {
   code: string;
   salePrice: number;
   category: string;
-  supplierId: number; 
+  supplierId: number;
   costPrice: number;
   description: string;
   stock: number;
@@ -25,9 +26,10 @@ interface AddProductModalProps {
   onClose: () => void;
   onConfirm: (data: ProductInputs & { stock: number }) => void;
   suppliers: Supplier[];
+  productToEdit?: Product | null;
 }
 
-export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers, productToEdit }: AddProductModalProps) {
   const {
     register,
     handleSubmit,
@@ -37,33 +39,59 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
   useEffect(() => {
     if (isOpen) {
-      reset(); 
+      reset();
     }
   }, [isOpen, reset]);
 
-    const onSubmit: SubmitHandler<ProductInputs> = (data) => {
-        const supplierIdNumber = typeof data.supplierId === "string" ? parseInt(data.supplierId, 10) : data.supplierId;
-        onConfirm({ ...data, supplierId: supplierIdNumber });
-    };
+  useEffect(() => {
+    if (isOpen) {
+      if (productToEdit) {
+        reset({
+          ...productToEdit,
+          // supplierId: productToEdit.supplier.id,
+        });
+      } else {
+        reset({
+          name: '',
+          code: '',
+          salePrice: 0,
+          category: '',
+          supplierId: 0,
+          costPrice: 0,
+          description: '',
+          stock: 0
+        });
+      }
+    }
+  }, [isOpen, productToEdit, reset]);
+
+  const onSubmit: SubmitHandler<ProductInputs> = (data) => {
+    const supplierIdNumber = typeof data.supplierId === "string" ? parseInt(data.supplierId, 10) : data.supplierId;
+    onConfirm({ ...data, supplierId: supplierIdNumber });
+  };
 
   if (!isOpen) {
     return null;
   }
 
+  const formKey = productToEdit ? productToEdit.id : 'new-product';
+
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50" onClick={onClose}>
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {productToEdit ? 'Edit Product' : 'Add New Product'}
+          </h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-800"><IoClose size={24} /></button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form key={formKey} onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            
+
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <input 
+              <input
                 id="name"
                 {...register("name", { required: "Name is required" })}
                 className={`mt-1 block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
@@ -73,27 +101,27 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-              <input 
+              <input
                 id="category"
                 {...register("category", { required: "Category is required" })}
                 className={`mt-1 block w-full border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
               />
               {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
             </div>
-            
+
             <div>
               <label htmlFor="code" className="block text-sm font-medium text-gray-700">Code</label>
-              <input 
+              <input
                 id="code"
                 {...register("code", { required: "Code is required" })}
                 className={`mt-1 block w-full border ${errors.code ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
               />
               {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code.message}</p>}
             </div>
-            
+
             <div>
               <label htmlFor="supplierId" className="block text-sm font-medium text-gray-700">Supplier</label>
-              <select 
+              <select
                 id="supplierId"
                 {...register("supplierId", { required: "Please select a supplier" })}
                 className={`mt-1 block w-full border ${errors.supplierId ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500`}
@@ -109,7 +137,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
             <div>
               <label htmlFor="sellingPrice" className="block text-sm font-medium text-gray-700">Price</label>
-              <input 
+              <input
                 id="sellingPrice"
                 type="number"
                 step="0.01"
@@ -121,7 +149,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
             <div>
               <label htmlFor="costPrice" className="block text-sm font-medium text-gray-700">Purchase value (per item)</label>
-              <input 
+              <input
                 id="purchasePrice"
                 type="number"
                 step="0.01"
@@ -133,7 +161,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
 
             <div>
               <label htmlFor="stock" className="block text-sm font-medium text-gray-700">Quantity in stock</label>
-              <input 
+              <input
                 id="stock"
                 type="number"
                 step="0.01"
@@ -143,7 +171,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers 
               {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>}
             </div>
           </div>
-          
+
           <div className="flex justify-end mt-8 space-x-4">
             <button type="button" onClick={onClose} className="py-2 px-6 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200">
               Cancel

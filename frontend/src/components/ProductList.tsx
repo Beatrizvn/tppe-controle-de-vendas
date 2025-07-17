@@ -1,13 +1,15 @@
-import { FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Product } from '@/app/products/page';
 
 export const ProductList = ({
   products,
   onDelete,
+  onEdit
 }: {
   products: Product[];
   onDelete: (id: number) => void;
+  onEdit: (product: Product) => void;
 }) => {
   const getStatusClass = (quantity: number) =>
     quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
@@ -57,8 +59,8 @@ export const ProductList = ({
             >
               <FaTrash size={16} />
             </button>
-            <button className="text-gray-400 hover:text-gray-600">
-              <BsThreeDotsVertical size={16} />
+            <button onClick={() => onEdit(product)} className="text-blue-500 hover:text-blue-700">
+              <FaEdit />
             </button>
           </div>
         </div>

@@ -1,8 +1,12 @@
 import { Supplier } from "@/app/products/page";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
-export const SupplierList = ({ suppliers, onDelete }: { suppliers: Supplier[]; onDelete: (id: number) => void; }) => {
+export const SupplierList = ({ suppliers, onDelete, onEdit }: { 
+  suppliers: Supplier[]; 
+  onDelete: (id: number) => void; 
+  onEdit: (supplier: Supplier) => void;
+}) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-12 gap-4 px-4 text-left text-xs text-gray-500 uppercase font-medium">
@@ -20,7 +24,9 @@ export const SupplierList = ({ suppliers, onDelete }: { suppliers: Supplier[]; o
           <div className="col-span-3 text-gray-700">{supplier.address}</div>
           <div className="col-span-1 flex items-center justify-end space-x-4">
             <button onClick={() => onDelete(supplier.id)} className="text-gray-400 hover:text-red-500"><FaTrash size={16} /></button>
-            <button className="text-gray-400 hover:text-gray-600"><BsThreeDotsVertical size={16} /></button>
+            <button onClick={() => onEdit(supplier)} className="text-blue-500 hover:text-blue-700">
+              <FaEdit />
+            </button>
           </div>
         </div>
       ))}
