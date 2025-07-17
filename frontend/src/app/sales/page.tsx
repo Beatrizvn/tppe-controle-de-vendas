@@ -9,21 +9,30 @@ import { AddCustomerModal } from '@/components/AddCustomerModal';
 import { CustomerList } from '@/components/CustomerList';
 
 
-interface Customer {
+export interface Customer {
   id: number;
   name: string;
 }
-interface SoldProduct {
+export interface SoldProduct {
   id: number;
   name: string;
   price: number;
   quantity: number;
 }
-interface Sale {
+
+interface SoldItem {
+  id: number;
+  product: {
+    id: number;
+    name: string;
+  };
+}
+export interface Sale {
   id: number;
   date: string;
   customer: Customer;
-  soldProducts: SoldProduct[];
+  soldItems: SoldItem[];
+  total: number;
 }
 
 export default function SalesPage() {

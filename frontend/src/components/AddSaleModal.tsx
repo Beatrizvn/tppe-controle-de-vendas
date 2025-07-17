@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoClose } from 'react-icons/io5';
 
-// --- Interfaces ---
 interface Customer { id: number; name: string; }
 interface AddSaleModalProps {
   isOpen: boolean;
@@ -15,7 +14,6 @@ interface AddSaleModalProps {
   products: Product[];
 }
 
-// Tipagem para os dados do formulário
 type SaleInputs = {
   customerId: string;
   date: string;
@@ -133,7 +131,6 @@ export const AddSaleModal = ({ isOpen, onClose, onConfirm, customers, products }
             </div>
           </div>
           
-          {/* Seção de Totais */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg text-right">
               <p className="text-gray-600">Subtotal: <span className="font-medium">${subtotal.toFixed(2)}</span></p>
               <p className="text-gray-600">Discount: <span className="font-medium text-red-500">-${(watchedDiscount || 0).toFixed(2)}</span></p>

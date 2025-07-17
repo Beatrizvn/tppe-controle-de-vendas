@@ -6,7 +6,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 export const CustomerList = ({ customers, onDelete }) => {
   return (
     <div className="space-y-4">
-      {/* Cabeçalho da Tabela */}
+      
       <div className="grid grid-cols-10 gap-4 px-4 text-left text-xs text-gray-500 uppercase font-medium">
         <div className="col-span-3">Name</div>
         <div className="col-span-3">Phone</div>

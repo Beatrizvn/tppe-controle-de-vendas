@@ -1,7 +1,7 @@
-'use client'; // 👈 Essencial para usar hooks de cliente
+'use client'; 
 
 import { useAuth } from '@/hooks/useAuth';
-import Header from './Header'; // Ajuste o caminho se necessário
+import Header from './Header'; 
 import { usePathname } from 'next/navigation';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
