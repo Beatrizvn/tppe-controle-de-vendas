@@ -8,7 +8,7 @@ import { SaleCard } from '@/components/SaleCard';
 import { ProfileModal } from '@/components/ProfileModal';
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, refreshUserData } = useAuth();
   const [recentSales, setRecentSales] = useState<Sale[]>([]);
   const [isProfileModalOpen, setProfileModalOpen] = useState(false)
 
@@ -52,7 +52,7 @@ export default function HomePage() {
       alert('Profile updated successfully!');
       setProfileModalOpen(false);
       
-      // if (refreshUserData) refreshUserData();
+      if (refreshUserData) refreshUserData(); 
 
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -71,10 +71,13 @@ export default function HomePage() {
           <h1 className="text-3xl font-bold text-gray-900 mr-4">
             Hello, {user.name}
           </h1>
-          <button className="flex flex-row gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors">
-            <FiUser />
-            Profile
-          </button>
+            <button 
+              onClick={() => setProfileModalOpen(true)}
+              className="flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors"
+            >
+              <FiUser />
+              Profile
+            </button>
         </div>
       </header>
 

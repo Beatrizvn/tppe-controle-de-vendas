@@ -38,6 +38,7 @@ services:
     build:
       context: ./frontend  
       dockerfile: Dockerfile
+    tty: true
     container_name: tppe_frontend
     ports:
       - "3000:3000"
