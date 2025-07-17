@@ -109,7 +109,8 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
     const updated = await UserRepository.update(id, data);
     res.json(updated);
-  } catch (err) {
+  } catch (error) { 
+    console.error(error);
     res.status(404).json({ message: 'User not found' });
   }
 });

@@ -27,7 +27,12 @@ export class UserRepository {
   }
 
   static async update(id: number, data: Prisma.UserUpdateInput) {
-    return prisma.user.update({ where: { id }, data });
+    const updateData = { ...data };
+    if (typeof data.password === 'string') {
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      updateData.password = hashedPassword;
+    } 
+    return prisma.user.update({ where: { id }, data: updateData });
   }
 
   static async delete(id: number) {
