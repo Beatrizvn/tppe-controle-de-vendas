@@ -32,6 +32,17 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// PUT update a sold item
+router.put('/:id', async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  try {
+    const updated = await SoldItemRepository.update(id, req.body);
+    res.json(updated);
+  } catch {
+    res.status(404).json({ message: 'Sold Item not found' });
+  }
+});
+
 // DELETE a sold item
 router.delete('/:id', async (req: Request, res: Response) => {
   try {

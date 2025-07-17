@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, SoldItem } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -26,6 +26,10 @@ export default class SoldItemRepository {
     return prisma.soldItem.create({
       data
     });
+  }
+
+  static async update(id: number, data: Partial<SoldItem>): Promise<SoldItem> {
+    return prisma.soldItem.update({ where: { id }, data });
   }
 
   static async delete(id: number) {

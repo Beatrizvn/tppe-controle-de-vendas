@@ -1,12 +1,17 @@
 'use client';
 
-import { FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { Customer } from '@/app/sales/page';
 
-export const CustomerList = ({ customers, onDelete }) => {
+export const CustomerList = ({ customers, onDelete, onEdit }: {
+  customers: Customer[];
+  onDelete: (id: number) => void;
+  onEdit: (customer: Customer) => void;
+}) => {
   return (
     <div className="space-y-4">
-      
+
       <div className="grid grid-cols-10 gap-4 px-4 text-left text-xs text-gray-500 uppercase font-medium">
         <div className="col-span-3">Name</div>
         <div className="col-span-3">Phone</div>
@@ -23,8 +28,8 @@ export const CustomerList = ({ customers, onDelete }) => {
             <button onClick={() => onDelete(customer.id)} className="text-gray-400 hover:text-red-500">
               <FaTrash size={16} />
             </button>
-            <button className="text-gray-400 hover:text-gray-600">
-              <BsThreeDotsVertical size={16} />
+            <button onClick={() => onEdit(customer)} className="text-blue-500 hover:text-blue-700">
+              <FaEdit />
             </button>
           </div>
         </div>

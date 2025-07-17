@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth'; 
+import { useAuth } from '@/hooks/useAuth';
 import { AddSaleModal } from '@/components/AddSaleModal';
 import { SalesList } from '@/components/SalesList';
-import { Product } from '../products/page';
+import { Product, Supplier } from '../products/page';
 import { AddCustomerModal } from '@/components/AddCustomerModal';
 import { CustomerList } from '@/components/CustomerList';
 
@@ -43,6 +43,7 @@ export default function SalesPage() {
   const [inStockProducts, setInStockProducts] = useState<Product[]>([]);
   const [openModal, setOpenModal] = useState<'sale' | 'customer' | null>(null);
   const [activeTab, setActiveTab] = useState('Sales');
+  const [editingItem, setEditingItem] = useState<Sale | Customer | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -52,8 +53,8 @@ export default function SalesPage() {
         try {
           const [salesRes, customersRes, productsRes] = await Promise.all([
             fetch(`${apiUrl}/sales/userid/${user.id}`),
-            fetch(`${apiUrl}/customers`), 
-            fetch(`${apiUrl}/products`)    
+            fetch(`${apiUrl}/customers`),
+            fetch(`${apiUrl}/products`)
           ]);
 
           if (!salesRes.ok || !customersRes.ok || !productsRes.ok) {
@@ -88,6 +89,57 @@ export default function SalesPage() {
     }
   };
 
+  const handleUpdateSale = async (saleData: any) => {
+    if (!editingItem) return;
+    try {
+      const response = await fetch(`${apiUrl}/sales/${editingItem.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(saleData),
+      });
+      if (!response.ok) throw new Error('Failed to update sale');
+
+      const updatedSale = await response.json();
+      setSales(prev => prev.map(s => s.id === editingItem.id ? updatedSale : s));
+      closeModalAndReset();
+    } catch (error) {
+      console.error("Error updating sale:", error);
+    }
+  };
+
+  const handleUpdateCustomer = async (customerData: any) => {
+    if (!editingItem) return;
+    try {
+      const response = await fetch(`${apiUrl}/customers/${editingItem.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customerData),
+      });
+      if (!response.ok) throw new Error('Failed to update customer');
+
+      const updatedCustomer = await response.json();
+      setCustomers(prev => prev.map(c => c.id === editingItem.id ? updatedCustomer : c));
+      closeModalAndReset();
+    } catch (error) {
+      console.error("Error updating customer:", error);
+    }
+  };
+
+  const handleOpenEditModal = (item: Sale | Customer, type: 'sale' | 'customer') => {
+    setEditingItem(item);
+    setOpenModal(type);
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingItem(null); 
+    setOpenModal(isSalesTab ? 'sale' : 'customer');
+  };
+
+  const closeModalAndReset = () => {
+    setOpenModal(null);
+    setEditingItem(null);
+  };
+
 
   const handleAddSale = async (saleData: any) => {
     if (!user?.id) return alert('User not authenticated!');
@@ -107,14 +159,16 @@ export default function SalesPage() {
       }
 
       const newSale = await response.json();
+
+      setOpenModal(null);
     } catch (error) {
-       console.error("Error creating sale:", error);
-       alert(`Failed to create sale: ${error.message}`);
+      console.error("Error creating sale:", error);
+      alert(`Failed to create sale: ${error.message}`);
     }
   };
 
 
-   const handleAddCustomer = async (customerData: any) => {
+  const handleAddCustomer = async (customerData: any) => {
     if (!user) return alert('User not authenticated!');
     try {
       const response = await fetch(`${apiUrl}/customers`, {
@@ -164,44 +218,54 @@ export default function SalesPage() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex justify-between items-center mb-4">
               <div className="flex border-b">
-                <button 
+                <button
                   onClick={() => setActiveTab('Sales')}
                   className={`py-2 px-4 text-sm font-medium ${isSalesTab ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>
                   Sales
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveTab('Customer')}
                   className={`py-2 px-4 text-sm font-medium ${!isSalesTab ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>
                   Customer
                 </button>
               </div>
-              <button 
+              <button
                 onClick={() => setOpenModal(isSalesTab ? 'sale' : 'customer')}
                 className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors">
                 {isSalesTab ? 'Add Sales' : 'Add Customer'}
               </button>
             </div>
-            
+
             {isSalesTab ? (
-              <SalesList sales={sales} onDelete={handleDeleteSale} />
+              <SalesList
+                sales={sales}
+                onDelete={handleDeleteSale}
+                onEdit={(sale) => handleOpenEditModal(sale, 'sale')} 
+              />
             ) : (
-              <CustomerList customers={customers} onDelete={handleDeleteCustomer} />
+              <CustomerList
+                customers={customers}
+                onDelete={handleDeleteCustomer}
+                onEdit={(customer) => handleOpenEditModal(customer, 'customer')} 
+              />
             )}
           </div>
         </div>
       </div>
-      
+
       <AddSaleModal
         isOpen={openModal === 'sale'}
-        onClose={() => setOpenModal(null)}
-        onConfirm={handleAddSale}
+        onClose={closeModalAndReset} 
+        onConfirm={(data) => editingItem ? handleUpdateSale(data) : handleAddSale(data)} 
         customers={customers}
         products={inStockProducts}
+        saleToEdit={openModal === 'sale' ? (editingItem as Sale) : null} 
       />
       <AddCustomerModal
         isOpen={openModal === 'customer'}
-        onClose={() => setOpenModal(null)}
-        onConfirm={handleAddCustomer}
+        onClose={closeModalAndReset} 
+        onConfirm={(data) => editingItem ? handleUpdateCustomer(data) : handleAddCustomer(data)} 
+        customerToEdit={openModal === 'customer' ? (editingItem as Customer) : null} 
       />
     </>
   );

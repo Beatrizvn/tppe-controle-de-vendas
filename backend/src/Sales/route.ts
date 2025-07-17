@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express';
 import SaleRepository from './repository';
+import { Prisma, PrismaClient, Sale } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const router = express.Router();
 
@@ -36,13 +39,76 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// PUT /sales/:id
+router.put('/:id', async (req: Request, res: Response) => {
+  const saleId = Number(req.params.id);
+
+  if (isNaN(saleId)) {
+    return res.status(400).json({ message: 'O ID da venda é inválido.' });
+  }
+
+  const { soldItems, payment, ...saleData } = req.body;
+
+  if (!soldItems || !Array.isArray(soldItems)) {
+    return res.status(400).json({ 
+      message: 'O campo "soldItems" é obrigatório e deve ser um array.' 
+    });
+  }
+
+  try {
+    const updatedSale = await prisma.$transaction(async (tx) => {
+      await tx.soldItem.deleteMany({
+        where: { saleId: saleId },
+      });
+
+      const sale = await tx.sale.update({
+        where: { id: saleId },
+        data: {
+          ...saleData,
+          
+          soldItems: {
+            createMany: {
+              data: soldItems.map((item: { productId: number; quantity: number; unitPrice: number; }) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+              })),
+            },
+          },
+
+          payment: payment ? {
+            upsert: {
+              where: { saleId: saleId },
+              create: { ...payment }, 
+              update: { ...payment }, 
+            },
+          } : undefined, 
+        },
+        include: {
+          soldItems: true,
+          payment: true,
+          customer: true
+        },
+      });
+
+      return sale;
+    });
+
+    res.json(updatedSale);
+
+  } catch (error) {
+    console.error("Falha ao atualizar a venda:", error);
+    res.status(500).json({ message: 'Não foi possível atualizar a venda.' });
+  }
+});
+
 // DELETE a sale
 router.delete('/:id', async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
     await SaleRepository.delete(Number(id));
     res.sendStatus(204);
-  } catch  {
+  } catch {
     res.status(404).json({ error: 'Sale not found' });
   }
 });

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, Sale } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -52,6 +52,10 @@ export default class SaleRepository {
         payment: true
       }
     });
+  }
+
+  static async update(id: number, data: Prisma.SaleUpdateInput): Promise<Sale> {
+    return prisma.sale.update({ where: { id }, data });
   }
 
   static async delete(id: number) {

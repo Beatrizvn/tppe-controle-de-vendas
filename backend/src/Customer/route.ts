@@ -31,6 +31,17 @@ router.post('/', async (req: Request, res: Response) => {
 // PUT /customers/:id
 router.put('/:id', async (req: Request, res: Response) => {
   const id = Number(req.params.id);
+  try {
+    const updated = await CustomerRepository.update(id, req.body);
+    res.json(updated);
+  } catch {
+    res.status(404).json({ message: 'Customers not found' });
+  }
+});
+
+// PUT /customers/:id
+router.put('/:id', async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
   const data = req.body;
   try {
     const updated = await CustomerRepository.update(id, data);
