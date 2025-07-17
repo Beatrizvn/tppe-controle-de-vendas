@@ -99,5 +99,20 @@ router.post('/logout', (_req: Request, res: Response) => {
   }
 });
 
+// PUT /users/:id
+router.put('/:id', async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const data = req.body;
+  try {
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+    const updated = await UserRepository.update(id, data);
+    res.json(updated);
+  } catch (err) {
+    res.status(404).json({ message: 'User not found' });
+  }
+});
+
 
 export default router;
