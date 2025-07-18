@@ -159,7 +159,7 @@ export default function SalesPage() {
       }
 
       const newSale = await response.json();
-
+      setSales(prev => [newSale, ...prev]);
       setOpenModal(null);
     } catch (error) {
       console.error("Error creating sale:", error);

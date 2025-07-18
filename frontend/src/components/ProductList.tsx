@@ -1,15 +1,17 @@
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { Product } from '@/app/products/page';
+import { Product, Supplier } from '@/app/products/page';
 
 export const ProductList = ({
   products,
   onDelete,
-  onEdit
+  onEdit,
+  supplierList,
 }: {
   products: Product[];
   onDelete: (id: number) => void;
   onEdit: (product: Product) => void;
+  supplierList: Supplier[];
 }) => {
   const getStatusClass = (quantity: number) =>
     quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
@@ -32,7 +34,7 @@ export const ProductList = ({
           <div className="col-span-3">
             <p className="font-semibold text-gray-800">{product.name}</p>
             <p className="text-sm text-gray-500">
-              {product.description || product.category}
+              {product.category}
             </p>
           </div>
 
@@ -49,7 +51,7 @@ export const ProductList = ({
           </div>
 
           <div className="col-span-2 text-gray-700">
-            {product.supplier?.companyName || 'N/A'}
+            {supplierList.find((s) => s.id === product.supplierId)?.companyName || 'N/A'}
           </div>
 
           <div className="col-span-1 flex items-center justify-end space-x-4">

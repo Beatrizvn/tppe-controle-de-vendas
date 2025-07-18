@@ -24,11 +24,11 @@ export interface Product {
   id: number;
   code: string;
   name: string;
-  description: string;
+  // description: string;
   salePrice: number;
   category: string;
   stock: number;
-  supplier: Supplier;
+  supplierId: number;
 }
 
 export default function ManagementPage() {
@@ -62,7 +62,6 @@ export default function ManagementPage() {
           api.get(`/products/userid/${user?.id}`),
           api.get(`/suppliers/userid/${user?.id}`)
         ]);
-
         setProducts(productsResponse.data);
         setSuppliers(suppliersResponse.data);
       } catch (error) {
@@ -179,7 +178,7 @@ export default function ManagementPage() {
           </div>
 
           {isProductsTab ? (
-            <ProductList products={products} onDelete={handleDeleteProduct} onEdit={(product) => handleOpenEditModal(product, 'product')} />
+            <ProductList supplierList={suppliers} products={products} onDelete={handleDeleteProduct} onEdit={(product) => handleOpenEditModal(product, 'product')} />
           ) : (
             <SupplierList suppliers={suppliers} onDelete={handleDeleteSupplier} onEdit={(supplier) => handleOpenEditModal(supplier, 'supplier')} />
           )}

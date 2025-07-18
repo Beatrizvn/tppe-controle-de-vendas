@@ -17,7 +17,7 @@ export type ProductInputs = {
   category: string;
   supplierId: number;
   costPrice: number;
-  description: string;
+  // description: string;
   stock: number;
 };
 
@@ -58,7 +58,7 @@ export default function AddProductModal({ isOpen, onClose, onConfirm, suppliers,
           category: '',
           supplierId: 0,
           costPrice: 0,
-          description: '',
+          // description: '',
           stock: 0
         });
       }
