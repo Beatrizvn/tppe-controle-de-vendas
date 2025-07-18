@@ -1,0 +1,83 @@
+name: CI Completa (Frontend, Backend e Banco de Dados)
+
+on:
+  push:
+    branches:
+      - main 
+  pull_request:
+    branches:
+      - main 
+
+jobs:
+  frontend_ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend 
+    steps:
+    - name: Checkout do Código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '^18.16.18' 
+        cache: 'npm'
+        cache-dependency-path: './frontend/package-lock.json' 
+
+    - name: Instalar Dependências do Frontend
+      run: npm install
+
+    - name: Rodar Testes do Frontend
+      run: npm test 
+
+    - name: Construir o Frontend (Verificação de Build)
+      run: npm run build 
+
+  backend_ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend 
+    steps:
+    - name: Checkout do Código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js para Backend
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x' 
+        cache: 'npm'
+        cache-dependency-path: './backend/package-lock.json'
+
+    - name: Subir o Banco de Dados com Docker Compose
+
+      run: |
+        docker compose -f ../docker-compose.yml up -d db backend
+        # Aguarda um pouco para o banco de dados inicializar completamente
+        echo "Aguardando o banco de dados iniciar..."
+        sleep 15 # Ajuste este tempo se o seu DB demorar mais para subir
+        docker compose -f ../docker-compose.yml ps
+
+      working-directory: .
+      env:
+        DB_HOST: db 
+        DB_PORT: 5432
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+        DB_NAME: tppe
+
+
+    - name: Instalar Dependências do Backend
+      run: npm install
+
+    - name: Rodar Migrações do Banco de Dados
+      run: npx prisma migrate deploy 
+
+    - name: Rodar Testes do Backend
+      run: npm test 
+
+    - name: Derrubar Serviços Docker Compose
+      if: always() 
+      run: docker compose -f ../docker-compose.yml down -v 
+      working-directory: . 
