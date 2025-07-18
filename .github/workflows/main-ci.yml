@@ -55,6 +55,10 @@ jobs:
         node-version: '^18.16.18' 
         cache: 'npm'
         cache-dependency-path: './backend/package-lock.json'
+    
+    - name: Limpar Cache NPM (Tentativa de correção EACCES)
+      run: npm cache clean --force
+      working-directory: ./backend
 
     - name: Subir o Banco de Dados e Backend com Docker Compose
       run: |
