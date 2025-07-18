@@ -64,6 +64,10 @@ jobs:
       run: npm install --omit=optional
       working-directory: ./backend
 
+    - name: Rodar generate
+      run: npx prisma generate
+      working-directory: ./backend
+
     - name: Rodar Migrações do Banco de Dados
       run: npx prisma migrate deploy
       working-directory: ./backend 
