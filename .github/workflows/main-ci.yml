@@ -28,35 +28,41 @@ jobs:
     - name: Instalar Dependências do Frontend
       run: npm install
 
+    - name: Rodar Testes do Frontend
+      # run: npm test 
+
     - name: Construir o Frontend (Verificação de Build)
       run: npm run build 
 
   backend_ci:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend 
+    # Remova o 'defaults.run.working-directory' daqui para ter controle granular
+    # defaults:
+    #   run:
+    #     working-directory: ./backend
+
     steps:
     - name: Checkout do Código
       uses: actions/checkout@v4
 
+    - name: Listar arquivos na raiz do repositório (Para Depuração - Opcional, pode remover depois)
+      run: ls -la ${{ github.workspace }}
+      working-directory: ${{ github.workspace }} 
+
     - name: Configurar Node.js para Backend
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x' 
+        node-version: '^18.16.18' 
         cache: 'npm'
         cache-dependency-path: './backend/package-lock.json'
 
-    - name: Subir o Banco de Dados com Docker Compose
-
+    - name: Subir o Banco de Dados e Backend com Docker Compose
       run: |
-        docker compose -f ../docker-compose.yml up -d db backend
-        # Aguarda um pouco para o banco de dados inicializar completamente
+        docker compose -f docker-compose.yml up -d db backend
         echo "Aguardando o banco de dados iniciar..."
-        sleep 15 # Ajuste este tempo se o seu DB demorar mais para subir
-        docker compose -f ../docker-compose.yml ps
-
-      working-directory: .
+        sleep 15 
+        docker compose ps
+      working-directory: ${{ github.workspace }} 
       env:
         DB_HOST: db 
         DB_PORT: 5432
@@ -64,17 +70,19 @@ jobs:
         DB_PASSWORD: postgres
         DB_NAME: tppe
 
-
     - name: Instalar Dependências do Backend
       run: npm install
+      working-directory: ./backend 
 
     - name: Rodar Migrações do Banco de Dados
-      run: npx prisma migrate deploy 
+      run: npx prisma migrate deploy
+      working-directory: ./backend 
 
     - name: Rodar Testes do Backend
-      run: npm test 
+      run: npm test
+      working-directory: ./backend 
 
     - name: Derrubar Serviços Docker Compose
       if: always() 
-      run: docker compose -f ../docker-compose.yml down -v 
-      working-directory: . 
+      run: docker compose -f docker-compose.yml down -v
+      working-directory: ${{ github.workspace }} 
