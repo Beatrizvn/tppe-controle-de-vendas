@@ -30,6 +30,8 @@ services:
       - ./backend/.env
     networks:
       - minha-rede
+    volumes:
+      - ./backend:/app
     command: sh -c "npm install && npx prisma migrate deploy && npm run test || true && npm run dev"
 
 

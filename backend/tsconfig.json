@@ -10,6 +10,8 @@
   "exclude": ["node_modules", "tests"],
   "scripts": {
   "build": "tsc",
-  "dev": "ts-node-dev src/index.ts"
-  }
+  "dev": "ts-node-dev src/index.ts",
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
+  }  }
 }
