@@ -26,13 +26,12 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: tppe
-    networks:
-      - minha-rede
     env_file:
       - ./backend/.env
-    volumes:
-      - ./backend:/app
-    command: sh -c "npm install && npx prisma migrate deploy && npm run test || true && npm run dev"
+    networks:
+      - minha-rede
+    command: sh -c "npx prisma migrate deploy && npm test && npm run dev"
+
 
   frontend:
     build:
