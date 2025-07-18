@@ -49,16 +49,28 @@ jobs:
       run: ls -la ${{ github.workspace }}
       working-directory: ${{ github.workspace }} 
 
+    - name: Limpar Cache NPM
+      run: npm cache clean --force
+      working-directory: ./backend
+
     - name: Configurar Node.js para Backend
       uses: actions/setup-node@v4
       with:
-        node-version: '^18.16.18' 
+        node-version: '24.4.0' 
         cache: 'npm'
-        # cache-dependency-path: './backend/package-lock.json'
-    
-    - name: Limpar Cache NPM (Tentativa de correção EACCES)
-      run: npm cache clean --force
+        cache-dependency-path: './backend/package-lock.json'
+
+    - name: Instalar Dependências do Backend
+      run: npm install --omit=optional
       working-directory: ./backend
+
+    - name: Rodar Migrações do Banco de Dados
+      run: npx prisma migrate deploy
+      working-directory: ./backend 
+
+    - name: Rodar Testes do Backend
+      run: npm test
+      working-directory: ./backend 
 
     - name: Subir o Banco de Dados e Backend com Docker Compose
       run: |
@@ -73,18 +85,6 @@ jobs:
         DB_USER: postgres
         DB_PASSWORD: postgres
         DB_NAME: tppe
-
-    - name: Instalar Dependências do Backend
-      run: npm install --omit=optional
-      working-directory: ./backend
-
-    - name: Rodar Migrações do Banco de Dados
-      run: npx prisma migrate deploy
-      working-directory: ./backend 
-
-    - name: Rodar Testes do Backend
-      run: npm test
-      working-directory: ./backend 
 
     - name: Derrubar Serviços Docker Compose
       if: always() 
