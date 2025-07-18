@@ -1,9 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import { NextConfig } from "next";
+
+const nextConfig: NextConfig  = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-
   webpack: (config) => {
     config.watchOptions = {
       poll: 1000, 

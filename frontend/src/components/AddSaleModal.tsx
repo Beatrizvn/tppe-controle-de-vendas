@@ -5,7 +5,6 @@ import { Sale } from '@/app/sales/page';
 import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoClose } from 'react-icons/io5';
-import { id } from 'zod/v4/locales';
 
 interface Customer { id: number; name: string; }
 interface AddSaleModalProps {
