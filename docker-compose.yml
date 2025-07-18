@@ -26,6 +26,7 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: tppe
+      PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "true"
     env_file:
       - ./backend/.env
     networks:
