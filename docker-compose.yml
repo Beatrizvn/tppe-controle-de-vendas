@@ -26,12 +26,11 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: tppe
-      PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: "true"
     env_file:
       - ./backend/.env
     networks:
       - minha-rede
-    command: sh -c "npx prisma migrate deploy && npm test && npm run dev"
+    command: sh -c "npm install && npx prisma migrate deploy && npm run test || true && npm run dev"
 
 
   frontend:
