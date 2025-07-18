@@ -75,8 +75,10 @@ jobs:
         DB_NAME: tppe
 
     - name: Instalar Dependências do Backend
-      run: npm install --unsafe-perm
-      working-directory: ./backend 
+      run: npm install
+      working-directory: ./backend
+      env:
+        npm_config_optional: false
 
     - name: Rodar Migrações do Banco de Dados
       run: npx prisma migrate deploy
