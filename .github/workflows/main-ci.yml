@@ -59,6 +59,10 @@ jobs:
         node-version: '24.4.0' 
         cache: 'npm'
         cache-dependency-path: './backend/package-lock.json'
+    
+    - name: Instalar Dependências do Backend
+      run: npm install --omit=optional
+      working-directory: ./backend
 
     - name: Subir o Banco de Dados e Backend com Docker Compose
       run: |
@@ -73,10 +77,6 @@ jobs:
         DB_USER: postgres
         DB_PASSWORD: postgres
         DB_NAME: tppe
-
-    - name: Instalar Dependências do Backend
-      run: npm install --omit=optional
-      working-directory: ./backend
 
     - name: Rodar generate
       run: npx prisma generate
