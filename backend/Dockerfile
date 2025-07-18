@@ -12,8 +12,6 @@ RUN npm run lint
 ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
 RUN npx prisma generate
 
-RUN npx prisma generate
-
 RUN npm run build
 
 FROM node:20
