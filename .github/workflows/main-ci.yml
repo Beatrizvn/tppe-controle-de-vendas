@@ -54,7 +54,7 @@ jobs:
       with:
         node-version: '^18.16.18' 
         cache: 'npm'
-        cache-dependency-path: './backend/package-lock.json'
+        # cache-dependency-path: './backend/package-lock.json'
     
     - name: Limpar Cache NPM (Tentativa de correção EACCES)
       run: npm cache clean --force
