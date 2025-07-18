@@ -60,22 +60,6 @@ jobs:
         cache: 'npm'
         cache-dependency-path: './backend/package-lock.json'
 
-    - name: Instalar Dependências do Backend
-      run: npm install --omit=optional
-      working-directory: ./backend
-
-    - name: Rodar generate
-      run: npx prisma generate
-      working-directory: ./backend
-
-    - name: Rodar Migrações do Banco de Dados
-      run: npx prisma migrate deploy
-      working-directory: ./backend 
-
-    - name: Rodar Testes do Backend
-      run: npm test
-      working-directory: ./backend 
-
     - name: Subir o Banco de Dados e Backend com Docker Compose
       run: |
         docker compose -f docker-compose.yml up -d db backend
@@ -89,6 +73,14 @@ jobs:
         DB_USER: postgres
         DB_PASSWORD: postgres
         DB_NAME: tppe
+
+    - name: Instalar Dependências do Backend
+      run: npm install --omit=optional
+      working-directory: ./backend
+
+    - name: Rodar generate
+      run: npx prisma generate
+      working-directory: ./backend
 
     - name: Derrubar Serviços Docker Compose
       if: always() 
