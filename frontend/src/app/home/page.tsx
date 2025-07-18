@@ -56,7 +56,7 @@ export default function HomePage() {
 
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert(`Error: ${error.message}`);
+      // alert(`Error: ${error.message}`);
     }
   };
 
