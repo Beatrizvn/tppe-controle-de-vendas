@@ -5,6 +5,7 @@ import { Sale } from '@/app/sales/page';
 import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoClose } from 'react-icons/io5';
+import { id } from 'zod/v4/locales';
 
 interface Customer { id: number; name: string; }
 interface AddSaleModalProps {
@@ -19,7 +20,7 @@ interface AddSaleModalProps {
 type SaleInputs = {
   customerId: string;
   date: string;
-  productId: string;
+  productId: number;
   quantity: number;
   price: number;
   paymentType: 'UPFRONT' | 'INSTALLMENT';
@@ -54,20 +55,19 @@ export const AddSaleModal = ({ isOpen, onClose, onConfirm, customers, products, 
 
   useEffect(() => {
     if (isOpen) {
-      if (saleToEdit && saleToEdit.soldItems?.length > 0) {
+      if (saleToEdit) {
         const firstSoldItem = saleToEdit.soldItems[0];
-
         reset({
           customerId: String(saleToEdit.customer.id),
-          date: new Date(saleToEdit.date).toISOString().split('T')[0], // Formato YYYY-MM-DD
-          productId: String(firstSoldItem.product.id),
+          date: new Date(saleToEdit.date).toISOString().split('T')[0], 
+          productId: firstSoldItem.product.id,
           quantity: (firstSoldItem as any).quantity,
           price: (firstSoldItem as any).unitPrice,
         });
       } else {
         reset({
           quantity: 1, discount: 0, installments: 1, paymentType: 'UPFRONT',
-          customerId: '', date: '', productId: '', price: 0
+          customerId: '', date: '', productId: 0, price: 0
         });
       }
     }
@@ -80,50 +80,45 @@ export const AddSaleModal = ({ isOpen, onClose, onConfirm, customers, products, 
     }
   };
 
-  const onSubmit: SubmitHandler<SaleInputs> = (data) => {
-    let finalPayload;
-
-    const soldItemData = {
-      productId: Number(data.productId),
-      quantity: Number(data.quantity),
-      unitPrice: Number(data.price),
-    };
-
-    const paymentData = {
-      type: data.paymentType,
-      status: 'Pending', 
-      discount: Number(data.discount),
-      installments: data.paymentType === 'INSTALLMENT' ? Number(data.installments) : 1,
-      finalAmount: total,
-    };
-
-
-    if (saleToEdit) {
-      finalPayload = {
-        customerId: Number(data.customerId),
-        total: total,
-        soldItems: [
-          {
-            id: saleToEdit.soldItems?.[0]?.id, 
-            ...soldItemData,
-          },
-        ],
-        payment: {
-          id: (saleToEdit as any).payment?.id,
-          ...paymentData
-        },
-      };
-    } else {
-      finalPayload = {
-        customerId: Number(data.customerId),
-        total: total,
-        soldItems: [soldItemData], 
-        payment: paymentData,      
-      };
-    }
-    
-    onConfirm(finalPayload);
+const onSubmit: SubmitHandler<SaleInputs> = (data) => {
+  const soldItemData = {
+    productId: Number(data.productId),
+    quantity: Number(data.quantity),
+    unitPrice: Number(data.price),
   };
+
+  const paymentData = {
+    type: data.paymentType,
+    status: 'Pending',
+    discount: Number(data.discount),
+    installments: data.paymentType === 'INSTALLMENT' ? Number(data.installments) : 1,
+    finalAmount: total,
+  };
+
+  let finalPayload;
+
+  if (saleToEdit) {
+    finalPayload = {
+      customerId: Number(data.customerId),
+      total: total,
+      soldItems: [soldItemData], 
+      payment: paymentData,
+    };
+  } else {
+    finalPayload = {
+      customerId: Number(data.customerId),
+      total: total,
+      soldItems: {
+        create: [soldItemData], 
+      },
+      payment: {
+        create: paymentData, 
+      },
+    };
+  }
+
+  onConfirm(finalPayload);
+};
 
   if (!isOpen) return null;
 

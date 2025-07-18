@@ -32,6 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
+    if(!isAuthenticated) return;
+    
     const token = Cookies.get('auth_token');
 
     if (token) {
