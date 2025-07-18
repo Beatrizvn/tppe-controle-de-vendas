@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaTrash } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import AddProductModal, { ProductInputs } from '@/components/AddProductModal';
 import AddSupplierModal, { SupplierInputs } from '@/components/AddSupplierModal';
 import { api } from '@/services/api';

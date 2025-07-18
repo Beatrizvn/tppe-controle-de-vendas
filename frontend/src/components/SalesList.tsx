@@ -1,6 +1,5 @@
 'use client';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Sale } from '@/app/sales/page';
 
 

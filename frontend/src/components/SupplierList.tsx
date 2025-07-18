@@ -1,5 +1,4 @@
 import { Supplier } from "@/app/products/page";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 export const SupplierList = ({ suppliers, onDelete, onEdit }: { 

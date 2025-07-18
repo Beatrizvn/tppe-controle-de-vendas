@@ -1,5 +1,4 @@
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Product, Supplier } from '@/app/products/page';
 
 export const ProductList = ({

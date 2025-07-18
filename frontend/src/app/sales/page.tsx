@@ -12,7 +12,10 @@ import { CustomerList } from '@/components/CustomerList';
 export interface Customer {
   id: number;
   name: string;
+  phone: string;
+  address: string;
 }
+
 export interface SoldProduct {
   id: number;
   name: string;
@@ -163,7 +166,7 @@ export default function SalesPage() {
       setOpenModal(null);
     } catch (error) {
       console.error("Error creating sale:", error);
-      alert(`Failed to create sale: ${error.message}`);
+      alert(`Failed to create sale`);
     }
   };
 

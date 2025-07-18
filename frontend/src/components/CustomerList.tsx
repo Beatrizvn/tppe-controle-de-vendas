@@ -1,7 +1,6 @@
 'use client';
 
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Customer } from '@/app/sales/page';
 
 export const CustomerList = ({ customers, onDelete, onEdit }: {
