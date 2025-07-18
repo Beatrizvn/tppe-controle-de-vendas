@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import SaleRepository from './repository';
-import { Prisma, PrismaClient, Sale } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -49,55 +49,62 @@ router.put('/:id', async (req: Request, res: Response) => {
 
   const { soldItems, payment, ...saleData } = req.body;
 
-  if (!soldItems || !Array.isArray(soldItems)) {
-    return res.status(400).json({ 
-      message: 'O campo "soldItems" é obrigatório e deve ser um array.' 
+  if (!soldItems || !Array.isArray(soldItems) || soldItems.length === 0) {
+    return res.status(400).json({
+      message: 'O campo "soldItems" é obrigatório e deve ser um array com pelo menos um item.',
     });
   }
 
   try {
     const updatedSale = await prisma.$transaction(async (tx) => {
+      await tx.sale.update({
+        where: { id: saleId },
+        data: {
+          ...saleData,
+          payment: payment ? {
+            upsert: {
+              where: { saleId: saleId },
+              create: { ...payment },
+              update: { ...payment },
+            },
+          } : undefined,
+        },
+      });
+
       await tx.soldItem.deleteMany({
         where: { saleId: saleId },
       });
 
-      const sale = await tx.sale.update({
+      await tx.soldItem.createMany({
+        data: soldItems.map((item: { productId: number; quantity: number; unitPrice: number; }) => ({
+          ...item,
+          saleId: saleId,
+        })),
+      });
+      
+      const saleWithAllData = await tx.sale.findUniqueOrThrow({
         where: { id: saleId },
-        data: {
-          ...saleData,
-          
+        include: {
           soldItems: {
-            createMany: {
-              data: soldItems.map((item: { productId: number; quantity: number; unitPrice: number; }) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                unitPrice: item.unitPrice,
-              })),
+            include: {
+              product: true, 
             },
           },
-
-          payment: payment ? {
-            upsert: {
-              where: { saleId: saleId },
-              create: { ...payment }, 
-              update: { ...payment }, 
-            },
-          } : undefined, 
-        },
-        include: {
-          soldItems: true,
           payment: true,
-          customer: true
+          customer: true,
         },
       });
 
-      return sale;
+      return saleWithAllData; 
     });
 
     res.json(updatedSale);
 
   } catch (error) {
     console.error("Falha ao atualizar a venda:", error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        return res.status(404).json({ message: 'Venda não encontrada.' });
+    }
     res.status(500).json({ message: 'Não foi possível atualizar a venda.' });
   }
 });
