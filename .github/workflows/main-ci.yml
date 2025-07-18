@@ -28,7 +28,7 @@ jobs:
     - name: Instalar Dependências do Frontend
       run: npm install
 
-    - name: Rodar Testes do Frontend
+    # - name: Rodar Testes do Frontend
       # run: npm test 
 
     - name: Construir o Frontend (Verificação de Build)
